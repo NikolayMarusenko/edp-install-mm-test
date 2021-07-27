@@ -309,3 +309,11 @@ metadata:
   url: url for docker registry
 ```
 >_**NOTE**: The full installation with integration between tools can take at least 10 minutes._
+
+&#8249;edp-project&#8250;
+
+
+&#8249;edp-project&#8250;
+
+
+&#8249;edp-project&#8250;
