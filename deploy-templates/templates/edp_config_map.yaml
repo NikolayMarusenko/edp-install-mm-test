@@ -1,12 +1,15 @@
-{{- if not (lookup "v1" "ConfigMap" ".Values.edp.name" ".Values.edp.configMapName").metadata }}
+{{- if not (lookup "v1" "ConfigMap" ".Values.global.edpName" "edp-config").metadata }}
 apiVersion: v1
 data:
-  edp_name: {{ .Values.edp.name }}
-  edp_version: {{.Values.edp.version}}
-  dns_wildcard: {{ .Values.edp.dnsWildCard }}
+  aws_region: {{ required "A valid .Values.awsRegion entry is required!" .Values.awsRegion }}
+  edp_name: {{ .Values.global.edpName }}
+  edp_version: {{.Values.global.version}}
+  dns_wildcard: {{ .Values.global.dnsWildCard }}
   perf_integration_enabled: "{{ .Values.perf.enabled }}"
   vcs_integration_enabled: "{{ .Values.vcs.enabled }}"
 kind: ConfigMap
 metadata:
-  name: {{.Values.edp.configMapName}}
+  labels:
+    {{- include "edp-install.labels" . | nindent 4 }}
+  name: edp-config
 {{end}}

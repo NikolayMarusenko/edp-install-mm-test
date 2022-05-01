@@ -1,96 +1,271 @@
-edp:
-  name: "tarianyk-helm-chart"
-  platform: "openshift"
-  version: "master-2.0.10"
-  additionalToolsTemplate: "edp-install-template"
-  superAdmins: "user3"
+## edp-install configuration
+## Ref: https://github.com/epam/edp-install
+##
+
+global:
+  version: "2.10.0-SNAPSHOT"
+  edpName: "stub-namespace"
+  platform: "kubernetes"
+  dnsWildCard: "stub.com"
   admins:
-    - "userOne"
-    - "userTwo"
+    - "stub_user_one@example.com"
   developers:
-    - "userThree"
-  viewers: "user3"
-  dnsWildCard: "delivery.aws.main.edp.projects.epam.com"
-  storageClass: "gp2"
-  devDeploy: "false"
-  keycloakNamespace: "keycloak"
-  keycloakUrl: "https://keycloak-keycloak.delivery.aws.main.edp.projects.epam.com"
-  webConsole: "https://master.delivery.aws.main.edp.projects.epam.com"
-  adminGroups:
-    - "tarianyk-helm-chart-edp-admin"
-  developerGroups:
-    - "tarianyk-helm-chart-edp-developer"
-  configMapName: "edp-config"
-  db:
+    - "stub_user_one@example.com"
+    - "stub_user_two@example.com"
+  database:
+    deploy: true
     image: "postgres:9.6"
-    name: edp-install-wizard-db
+    imagePullPolicy: "IfNotPresent"
+    host: "edp-db"
+    name: "edp-db"
     port: 5432
-    host:
-    superAdminSecret:
-      name: super-admin-db
-      username: super-admin
-    tenantAdminSecret:
-      name: db-admin-console
-      username: admin
     storage:
       class: gp2
       size: 2Gi
-jenkins:
-  storageClass: gp2
-  name: "jenkins"
-  version: "epamedp/edp-jenkins:2.2.0"
-  image: "docker-registry.default.svc:5000/tarianyk-helm-chart/edp-jenkins-2.2.0"
-  volumeCapacity: "10Gi"
-  stagesVersion: "master"
-  pipelinesVersion: "master"
-  sharedLibraryRepo:
-    pipelines: "https://github.com/epmd-edp/edp-library-pipelines.git"
-    stages: "https://github.com/epmd-edp/edp-library-stages.git"
-  sharedLibraryVersion:
-    pipelines: "master"
-    stages: "master"
-  pullSecrets:
-adminConsole:
-  version: "epamedp/edp-admin-console:2.2.1"
-  image: "docker-registry.default.svc:5000/tarianyk-helm-chart/edp-admin-console-2.2.1"
-  pullSecrets:
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    annotations: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+  webConsole:
+    # Cluster URL, e.g. https://xxxxxxxxxxxxxxxxxxxx.sk1.eu-central-1.eks.amazonaws.com
+    url:
+  kioskEnabled: true
+
+# AWS Region, e.g. "eu-central-1"
+awsRegion:
+
 perf:
   enabled: "false"
-  nodeId: ""
-  url: ""
+
 vcs:
   enabled: "false"
-keycloak:
-  namespace: "keycloak"
-  url: "https://keycloak-keycloak.delivery.aws.main.edp.projects.epam.com"
-  secretToCopy: "keycloak"
-gerrit:
-  deploy: true
-  name: "gerrit"
-  image: "openfrontier/gerrit"
-  sshPort: "22"
-  version: "3.1.4"
-gitServer:
-  name: "gerrit"
-  user: "jenkins"
-  httpsPort: 443
-  nameSshKeySecret: "gerrit-ciuser-sshkey"
-  sshPort: 22
-jira:
-  integration: true
-  name: "epam-jira"
-  apiUrl: "https://jiraeu-api.epam.com"
-  rootUrl: "https://jiraeu.epam.com"
-  credentialName: "epam-jira-user"
-nexus:
-  deploy: true
-  name: "nexus"
-  image: "sonatype/nexus3"
-  version: "3.21.2"
-sonar:
-  deploy: true
-  name: "sonar"
-  image: "sonarqube"
-  version: "7.9-community"
+
+# AWS IAM role with push access to ECR e.g. arn:aws:iam::<AWS_ACCOUNT_ID>:role/<AWS_IAM_ROLE_NAME>
+kaniko:
+  # -- AWS IAM role to be used for kaniko pod servce account (IRSA)
+  roleArn:
+  # -- Existing secret which contains docker-config, if not defined then 'kaniko-docker-config' will be created
+  # with default value: { "credStore": "ecr-login"}
+  existingDockerConfig:
+  # -- nodeSelector Node labels for pod assignment
+  nodeSelector: {}
+  # -- tolerations Tolerations for pod assignment
+  tolerations: []
+
+  initKanikoContainer:
+    # -- init container image which waits for Dockerfile before starting actual build
+    image: busybox:1.35.0
+    # -- Array with extra environment variables to add to the init-kaniko container
+    extraEnvVars: []
+
+  initRepositoryContainer:
+    # -- aws-cli image is used to provision non-existing AWS ECR repository
+    image: amazon/aws-cli:2.5.2
+    # -- Configure extra options for command 'aws ecr create-repository'
+    extraCommandOptions: ""
+    # extraCommandOptions: "--tags Key=user:tag,Value=TENANT_NAME"
+    # -- Array with extra environment variables to add to the init-repository container
+    extraEnvVars: []
+
+  kanikoContainer:
+    # -- kaniko image
+    image: gcr.io/kaniko-project/executor:v1.8.0
+    # Kaniko resource requests and limits
+    # -- Array with extra environment variables to add to the Kaniko container
+    extraEnvVars: []
+    resources:
+      # -- The resources limits for the Kaniko containers
+      limits: {}
+      # -- The requested resources for the Kaniko containers
+      requests: {}
+
 dockerRegistry:
-  url: "093899590031.dkr.ecr.eu-central-1.amazonaws.com"
+  url: "<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com"
+
+annotations: {}
+
+keycloak-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/keycloak-operator
+  #   version:
+  keycloak:
+    url: "keycloak.example.com"
+
+codebase-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/codebase-operator
+  #   version:
+  # envs:
+  #   - name: RECONCILATION_PERIOD
+  #     value: "360"  # The value should be typed in minutes
+  #   # Maximum number of parallel reconciliation codebasebranches
+  #   - name: CODEBASE_BRANCH_MAX_CONCURRENT_RECONCILES
+  #     value: 3
+  # jira:
+  #   integration: false
+  #   name: "jira"
+  #   apiUrl: "https://jiraeu-api.example.com"
+  #   rootUrl: "https://jiraeu.example.com"
+  #   credentialName: "jira-user"
+
+jenkins-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/jenkins-operator
+  #   version:
+  # jenkins:
+  #   deploy: true
+  #   image: epamedp/edp-jenkins
+  #   version:
+  #   storage:
+  #     class: gp2
+  #     size: 10Gi
+  #   initImage:
+  #   sharedLibraries:
+  #     - name: "edp-library-stages"
+  #       url: "https://github.com/epam/edp-library-stages.git"
+  #       tag: "master"
+  #     - name: "edp-library-pipelines"
+  #       url: "https://github.com/epam/edp-library-pipelines.git"
+  #       tag: "master"
+  # xample of using private repository:
+  #     - name: "stub-name"
+  #       url: "stub-url"
+  #       tag: "stub-tag"
+  #       secret: "stub-secret-name"
+  #       type: "ssh" # can be "ssh", "password" or "token"
+  #   pullSecrets:
+  #   basePath: ""
+
+cd-pipeline-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/cd-pipeline-operator
+  #   version:
+
+nexus-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/nexus-operator
+  #   version:
+  # nexus:
+  #   deploy: true
+  #   name: "nexus"
+  #   image: "sonatype/nexus3"
+  #   version:
+  #   basePath: ""
+  #   imagePullSecrets:
+  #   storage:
+  #     class: gp2
+  #     size: 10Gi
+
+sonar-operator:
+  enabled: true
+#  image:
+#    name: epamedp/sonar-operator
+#    version:
+#  sonar:
+#    deploy: true
+#    name: "sonar"
+#    image: "sonarqube"
+#    version:
+#    initImage: "busybox"
+#    dbImage: "postgres:9.6"
+#    storage:
+#      data:
+#        class: gp2
+#        size: 1Gi
+#      database:
+#        class: gp2
+#        size: 1Gi
+#     imagePullSecrets:
+#     basePath: ""
+
+admin-console-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/admin-console-operator
+  #   version:
+  # adminConsole:
+  #   image: epamedp/edp-admin-console
+  #   version:
+  #   envs:
+  #     - name: INTEGRATION_STRATEGIES
+  #       value: "Create,Clone,Import"
+  #     - name: BUILD_TOOLS
+  #       value: "maven"
+  #     # DEPLOYMENT_SCRIPT value can be helm-chart or openshift-template or both helm-chart,openshift-template
+  #     - name: DEPLOYMENT_SCRIPT
+  #       value: "helm-chart"
+  #     - name: VERSIONING_TYPES
+  #       value: "default,edp"
+  #     - name: CI_TOOLS
+  #       value: "Jenkins,GitLab CI"
+  #     - name: PERF_DATA_SOURCES
+  #       value: "Sonar,Jenkins,GitLab"
+  #   imagePullSecrets:
+  #   basePath: ""
+  #    projectUrlMask: "/console/project/{namespace}/overview"
+  #    imageStreamUrlMask: "/console/project/{namespace}/browse/images/{stream}"
+
+gerrit-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/gerrit-operator
+  #   version:
+  # gerrit:
+  #   deploy: true
+  #   name: "gerrit"
+  #   image: "openfrontier/gerrit"
+  #   sshPort: "22"
+  #   version:
+  #   imagePullSecrets:
+  #   storage:
+  #     size: 1Gi
+  #     class: gp2
+
+reconciler:
+  enabled: true
+  # image:
+  #   name: epamedp/reconciler
+  #   version:
+
+perf-operator:
+  enabled: true
+  # image:
+  #   name: epamedp/perf-operator
+  #   version:
+  # perf:
+  #   integration: false
+  #   name: "perf"
+  #   apiUrl: "https://perf.delivery.example.com"
+  #   rootUrl: "https://perf.delivery.example.com"
+  #   credentialName: "perf-user"
+  #   projectName: "PROJECT-NAME"
+  #   luminate:
+  #     enabled: false
+  #     apiUrl: "https://api.example.luminatesec.com"
+  #     credentialName: "luminate-secret"
+
+# define EDPComponents, more details: https://github.com/epam/edp-component-operator/
+EDPComponents: {}
+  # - prometheus:
+  #     url: https://ingress-prometheus.example.com
+  #     visible: true
+  #     icon: icon_in_base64
+  # - kibana:
+  #     url: https://ingress-kibana.example.com
+  #     visible: false
+  #     icon: icon_in_base64
+  # - another_tool:
+  #     url: https://ingress-anothertool.example.com
+  #     visible: true
+  #     icon: icon_in_base64

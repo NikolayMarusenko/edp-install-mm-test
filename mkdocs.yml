@@ -1,0 +1,186 @@
+site_name: EPAM Delivery Platform
+repo_name: "GitHub"
+repo_url: https://github.com/epam/edp-install
+site_url: https://epam.github.io/edp-install
+edit_uri: ""
+
+# Extensions
+markdown_extensions:
+  - fancyboxmd
+  - admonition
+  - attr_list
+  - codehilite
+  - mdx_truly_sane_lists
+  - meta
+  - plantuml_markdown:
+      server: http://www.plantuml.com/plantuml
+  - toc:
+      permalink: ⚓︎
+  - pymdownx.superfences:
+      preserve_tabs: true
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: vegalite
+          class: vegalite
+          format: !!python/name:mkdocs_charts_plugin.fences.fence_vegalite
+
+extra_css:
+  - https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js
+  - https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js
+  - https://cdn.jsdelivr.net/npm/vega@5
+  - https://cdn.jsdelivr.net/npm/vega-lite@5
+  - https://cdn.jsdelivr.net/npm/vega-embed@6
+  - https://unpkg.com/mermaid@8.14.0/dist/mermaid.min.js
+
+theme:
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  name: material
+
+  palette:
+    - scheme: default
+      primary: cyan
+      accent: blue
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+
+plugins:
+  - search
+  - awesome-pages
+  - charts
+  - minify:
+      minify_html: true
+
+extra:
+  analytics:
+    provider: google
+    property: G-7ZV6PJ2LSP
+  social:
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/u/epamedp
+
+nav:
+  - Overview: index.md
+  - features.md
+  - Getting Started: getting-started.md
+  - Operator Guide:
+    - operator-guide/index.md
+    - Installation:
+      - Prerequisites:
+        - Install Ingress-nginx: operator-guide/install-ingress-nginx.md
+        - Install Keycloak: operator-guide/install-keycloak.md
+        - Kiosk:
+            - EDP Kiosk Usage: operator-guide/edp-kiosk-usage.md
+            - Set Up Kiosk: operator-guide/install-kiosk.md
+        - Set Up Kubernetes: operator-guide/kubernetes-cluster-settings.md
+        - Set Up OpenShift: operator-guide/openshift-cluster-settings.md
+      - Install EDP: operator-guide/install-edp.md
+    - Configuration:
+      - Add Other Code Language: operator-guide/add-other-code-language.md
+      - Backup With Velero:
+          - Install Velero: operator-guide/install-velero.md
+          - Restore EDP Tenant With Velero: operator-guide/restore-edp-with-velero.md
+      - Enable VCS Import Strategy: operator-guide/import-strategy.md
+      - Manage Jenkins Pipelines:
+        - Overview: operator-guide/overview-manage-jenkins-pipelines.md
+        - Manage Jenkins CI Pipeline Job Provisioner: operator-guide/manage-jenkins-ci-job-provision.md
+        - Manage Jenkins CD Pipeline Job Provisioner: operator-guide/manage-jenkins-cd-job-provision.md
+        - Delete Jenkins Job Provision: operator-guide/delete-jenkins-job-provision.md
+      - Logging:
+          - Install Grafana Loki: operator-guide/install-loki.md
+          - Multitenant Logging: operator-guide/multitenant-logging.md
+          - Schedule Pods Restart: operator-guide/schedule-pods-restart.md
+    - Integration:
+      - AWS Integration:
+        - Configure AWS WAF With Terraform: operator-guide/waf-tf-configuration.md
+        - Associate IAM Roles With Service Accounts: operator-guide/enable-irsa.md
+        - IAM Roles for Kaniko Service Accounts: operator-guide/kaniko-irsa.md
+        - IAM Roles for Velero Service Accounts: operator-guide/velero-irsa.md
+        - IAM Roles for Loki Service Accounts: operator-guide/loki-irsa.md
+        - EKS OIDC With Keycloak: operator-guide/configure-keycloak-oidc-eks.md
+      - Jira Integration:
+          - Adjust Jira Integration: operator-guide/jira-integration.md
+          - Adjust VCS Integration With Jira: operator-guide/jira-gerrit-integration.md
+      - GitHub Integration:
+          - GitHub Integration: operator-guide/github-integration.md
+          - Debug GitHub Webhooks in Jenkins: operator-guide/github-debug-webhooks.md
+      - GitLab Integration:
+          - GitLab Integration: operator-guide/gitlab-integration.md
+          - Adjust GitLab CI Tool: operator-guide/gitlabci-integration.md
+          - Debug GitLab Webhooks in Jenkins: operator-guide/gitlab-debug-webhooks.md
+      - Perf Server Integration: operator-guide/perf-integration.md
+    - Upgrade:
+      - EDP on Kubernetes:
+          - Upgrade EDP v.2.7.8 to v.2.8.4: operator-guide/upgrade-edp-2.7.8-to-2.8.4.md
+          - Upgrade EDP v.2.8.4 to v.2.9.0: operator-guide/upgrade-edp-2.8.4-to-2.9.0.md
+          - Upgrade EDP v.2.9.0 to v.2.10.2: operator-guide/upgrade-edp-2.9.0-to-2.10.2.md
+          - Unreleased: operator-guide/upgrade-edp-unreleased.md
+      - Tutorials:
+        - Deploy AWS EKS Cluster: operator-guide/deploy-aws-eks.md
+        - Manage Jenkins Agent: operator-guide/add-jenkins-agent.md
+  - User Guide:
+    - user-guide/index.md
+    - Application:
+      - Overview: user-guide/application.md
+      - user-guide/add-application.md
+    - Autotest:
+      - Overview: user-guide/autotest.md
+      - user-guide/add-autotest.md
+    - Library:
+      - Overview: user-guide/library.md
+      - user-guide/add-library.md
+    - Pipelines:
+      - EDP CI/CD Overview: user-guide/cicd-overview.md
+      - EDP Pipeline Framework: user-guide/pipeline-framework.md
+      - Add Custom Pipeline Library: user-guide/add-custom-global-pipeline-lib.md
+      - CI Pipeline:
+        - user-guide/ci-pipeline-details.md
+        - user-guide/code-review-pipeline.md
+        - user-guide/build-pipeline.md
+        - user-guide/customize-ci-pipeline.md
+        - Stages:
+          - Overview: user-guide/pipeline-stages.md
+          - Use Dockerfile Linters for Code Review Pipeline: user-guide/dockerfile-stages.md
+          - Promote Docker Images From ECR to Docker Hub: user-guide/ecr-to-docker-stages.md
+          - Helm Chart Testing and Documentation Tools: user-guide/helm-stages.md
+          - Use Open Policy Agent: user-guide/opa-stages.md
+          - CI Pipeline for Terraform: user-guide/terraform-stages.md
+          - CI Pipeline for Container: user-guide/container-stages.md
+      - CD Pipeline:
+        - user-guide/cd-pipeline-details.md
+        - user-guide/add-cd-pipeline.md
+        - user-guide/customize-cd-pipeline.md
+        - user-guide/prepare-for-release.md
+        - Stages:
+          - Copy Shared Secrets: user-guide/copy-shared-secrets.md
+          - Helm Release Deletion: user-guide/helm-release-deletion.md
+          - Semi Auto Deploy: user-guide/semi-auto-deploy.md
+    - user-guide/d-d-diagram.md
+  - Developer Guide:
+    - developer-guide/index.md
+    - developer-guide/local-development.md
+    - developer-guide/rest-api.md
+    - developer-guide/mk-docs-development.md
+    - developer-guide/edp-workflow.md
+  - RoadMap: roadmap.md
+  - Use Cases:
+    - use-cases/index.md
+    - Autotest as Quality Gate: use-cases/autotest-as-quality-gate.md
+    - Promote Application in CD Pipeline: use-cases/promotion-procedure.md
+  - FAQ: faq.md
+  - glossary.md
+  - Releases ⧉: https://github.com/epam/edp-install/blob/master/RELEASES.md

@@ -1,4 +1,4 @@
-{{- if eq .Values.edp.platform "openshift"  -}}
+{{- if eq .Values.global.platform "openshift"  -}}
 apiVersion: security.openshift.io/v1
 kind: SecurityContextConstraints
 allowHostDirVolumePlugin: false
@@ -13,11 +13,15 @@ defaultAddCapabilities: []
 fsGroup:
   type: MustRunAs
   ranges:
-    - min: 1
+    - min: 999
       max: 65543
 groups: []
 metadata:
-  name: edp-{{ .Values.edp.name }}
+  labels:
+    {{- include "edp-install.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install"
+  name: edp-{{ .Values.global.edpName }}
 priority: 0
 readOnlyRootFilesystem: false
 requiredDropCapabilities:
@@ -34,7 +38,8 @@ seLinuxContext:
 supplementalGroups:
   type: RunAsAny
 users:
-- system:serviceaccount:{{ .Values.edp.name }}:edp
+- system:serviceaccount:{{ .Values.global.edpName }}:edp
+- system:serviceaccount:{{ .Values.global.edpName }}:edp-db
 volumes:
 - configMap
 - downwardAPI
