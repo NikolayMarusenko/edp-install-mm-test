@@ -22,8 +22,8 @@ parser.add_argument('--candidate_namespace_name', type=str, help='Candidate name
 parser.add_argument('--candidate_application_name', type=str, help='Candidate application name')
 parser.add_argument('--candidate_container_image', type=str, help='Candidate container image')
 parser.add_argument('--risk_threshold', type=int, help='Risk threshold (between 0 and 100)')
-set_host(args.host)
 args = parser.parse_args()
+set_host(args.host)
 EMAIL = args.username
 PASSWORD = args.password
 
