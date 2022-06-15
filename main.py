@@ -6,8 +6,6 @@ import logsight.exceptions
 from logsight.compare import LogsightCompare
 from logsight.authentication import LogsightAuthentication
 
-from utils import create_verification_report
-
 from logsight.config import set_host
 
 SECONDS_SLEEP = 15
@@ -57,9 +55,6 @@ while True:
             print("Both tags do not exist! We cant perform verification!")
             exit(0)
 
-report = create_verification_report(vresults=r,
-                                    baseline_tags=BASELINE_TAGS,
-                                    candidate_tags=CANDIDATE_TAGS)
 print(report)
 
 if r['risk'] >= RISK_THRESHOLD:
