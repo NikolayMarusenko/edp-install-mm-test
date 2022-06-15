@@ -56,6 +56,6 @@ while True:
             exit(0)
 
 if r['risk'] >= RISK_THRESHOLD:
-    exit(0)
+    exit(1)
 else:
     exit(0)
