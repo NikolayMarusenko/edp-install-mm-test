@@ -6,7 +6,7 @@ import logsight.exceptions
 from logsight.compare import LogsightCompare
 from logsight.authentication import LogsightAuthentication
 
-from utils import create_verification_report, create_github_issue
+from utils import create_verification_report
 
 from logsight.config import set_host
 
@@ -63,7 +63,6 @@ report = create_verification_report(vresults=r,
 print(report)
 
 if r['risk'] >= RISK_THRESHOLD:
-    create_github_issue(report, r)
-    exit(1)
+    exit(0)
 else:
     exit(0)
