@@ -55,8 +55,6 @@ while True:
             print("Both tags do not exist! We cant perform verification!")
             exit(0)
 
-print(report)
-
 if r['risk'] >= RISK_THRESHOLD:
     exit(0)
 else:
