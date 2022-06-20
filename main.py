@@ -39,11 +39,12 @@ for i in range(n_runs):
     try:
         r = compare.compare(baseline_tags=BASELINE_TAGS,
                             candidate_tags=CANDIDATE_TAGS)
+        print(r)
         break
     except Exception as e:
         time.sleep(SECONDS_SLEEP)
         if i == (n_runs-1):
-            exit(0)
+            exit(2)
  
 if r['risk'] >= RISK_THRESHOLD:
     exit(1)
