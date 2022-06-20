@@ -42,7 +42,6 @@ for i in range(n_runs):
         break
     except Exception as e:
         time.sleep(SECONDS_SLEEP)
-        print("Something went wrong, trying again: ", i)
         if i == (n_runs-1):
             exit(0)
  
