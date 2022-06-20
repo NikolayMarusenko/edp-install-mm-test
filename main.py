@@ -35,16 +35,16 @@ time.sleep(SECONDS_SLEEP)
 compare = LogsightCompare(auth.token)
 flag = 0
 n_runs = 5
-for (i in range(n_runs)):
+for i in range(n_runs):
     try:
         r = compare.compare(baseline_tags=BASELINE_TAGS,
                             candidate_tags=CANDIDATE_TAGS)
         break
     except Exception as e:
         time.sleep(SECONDS_SLEEP)
-       	print("Something went wrong, trying again: ", i)
-		if(i == (n_runs-1)):
-			exit(0)
+        print("Something went wrong, trying again: ", i)
+        if i == (n_runs-1):
+            exit(0)
  
 if r['risk'] >= RISK_THRESHOLD:
     exit(1)
