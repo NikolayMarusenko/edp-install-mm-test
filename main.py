@@ -27,8 +27,8 @@ set_host(args.host)
 EMAIL = args.username
 PASSWORD = args.password
 
-BASELINE_TAGS = {"namespace": args.baseline_namespace, "container": args.baseline_container, "image": args.baseline_image}
-CANDIDATE_TAGS = {"namespace": args.candidate_namespace, "container": args.candidate_container, "image": args.candidate_image}
+BASELINE_TAGS = {"namespace_name": args.baseline_namespace, "container_name": args.baseline_container, "container_image": args.baseline_image}
+CANDIDATE_TAGS = {"namespace_name": args.candidate_namespace, "container_name": args.candidate_container, "container_image": args.candidate_image}
 RISK_THRESHOLD = args.risk_threshold
 auth = LogsightAuthentication(email=EMAIL, password=PASSWORD)
 time.sleep(SECONDS_SLEEP)
